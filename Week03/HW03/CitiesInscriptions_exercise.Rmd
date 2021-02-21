@@ -1,7 +1,7 @@
 ---
 title: "Ancient cities and inscriptions"
-author: "Adela Sobotkova"
-date: "13/01/2021 updated `r format(Sys.time(), '%B %d, %Y')`" 
+author: "Aske Svane Qvist"
+date: "21/02-21" 
 output:
   rmdformats::readthedown:
   highlight: kate
