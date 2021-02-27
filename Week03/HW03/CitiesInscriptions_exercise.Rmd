@@ -207,7 +207,7 @@ max(i$longitude)
 min(i$longitude)
 
 
-# Create a sf object
+# Create a sf object (convert into spatial points. it is now converted into degrees because it is a 3D object)
 insc_sf4326 <- st_as_sf(i, coords = c("longitude", "latitude"), crs = 4326)
 # check if it is an sf object
 class(insc_sf4326)
@@ -233,6 +233,8 @@ To reduce the computational intensity of the final intersection, it is a good id
 * Use `st_difference` flag to select inscriptions outside these buffers and create `insc_rural` object
 
 ```{r intersection, eval=FALSE}
+# NOTE: for intersections it is always better to project the objects
+
 
 # Project the sf object into EPSG3035 so it is consistent with cities and their buffers
 insc_sf3035 <- st_transform(insc_sf4326, crs = 3035)# st_crs(cities_5km)
@@ -242,6 +244,7 @@ crs(insc_sf3035)
 crs(cities_5km) # now, they have the same reference system
 
 # Create a convex hull around the inscriptions's points dissolved into a MULTIPOINT
+# that is because we have cities from many countries and that is computationally heavy. So we are using the inscriptions to create a convex hull to create a subset flling within this area.
 insc_ch <- st_convex_hull(st_union(insc_sf3035))
 
 # Dobble check if the CRS are the same
@@ -299,6 +302,8 @@ st_crs(cities_it) == st_crs(insc_sf3035)
 #list of inscriptions per each of the 399 buffers
 # th inscriptions intersecting with the city buffers in cities_it
 inscriptions_intersecting <- st_intersects(cities_it, insc_sf3035)
+summary(inscriptions_intersecting)
+# for each of the 399 cities in the CH, we get a list of the inscriptions
 
 # Checking out the length of inscriptions intersectiong with the citybuffers
 length(unlist(inscriptions_intersecting)) # 11856
